@@ -1,12 +1,12 @@
-name: Run Tests
+name: Auto Merge Development to Main
 
 on:
   push:
     branches:
-      - main
+      - development
 
 jobs:
-  test:
+  test-and-merge:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,10 +20,21 @@ jobs:
         with:
           node-version: '20'
 
-      # 3. Instalar las dependencias
+      # 3. Instalar dependencias
       - name: Install Dependencies
         run: npm install
 
       # 4. Ejecutar los tests
       - name: Run Tests
         run: npm test
+
+      # 5. Merge a main si los tests pasan
+      - name: Merge Development to Main
+        if: success() # Solo si los tests pasan
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout main
+          git pull origin main
+          git merge --no-ff development
+          git push origin main
