@@ -1,0 +1,22 @@
+{
+  "name": "labgit",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1",
+    "supertest": "^7.0.0"
+  }
+}
