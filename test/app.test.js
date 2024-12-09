@@ -8,6 +8,6 @@ describe('GET /api/hello', () => {
     it('should return Hello, World!', async () => {
         const res = await request(app).get('/api/hello');
         expect(res.status).to.equal(200);
-        expect(res.body).to.have.property('message', 'si funciona');
+        expect(res.body).to.have.property('message', 'si funciona ahora');
     });
 });
