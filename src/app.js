@@ -6,7 +6,7 @@ app.use(express.json());
 
 // Define el endpoint
 app.get('/api/hello', (req, res) => {
-    res.status(200).json({ message: 'no funciona' });
+    res.status(200).json({ message: 'si anda' });
 });
 
 export default app;
