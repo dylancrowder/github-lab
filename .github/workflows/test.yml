@@ -30,11 +30,12 @@ jobs:
 
       # 5. Merge a main si los tests pasan
       - name: Merge Development to Main
-        if: success() # Solo si los tests pasan
+        if: success()  # Solo si los tests pasan
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git checkout main
-          git pull origin main
-          git merge --no-ff development
-          git push origin main
+          git fetch --all  # Asegúrate de obtener todas las ramas remotas
+          git checkout main  # Cambia a la rama main
+          git pull origin main  # Asegúrate de que tienes los cambios más recientes de main
+          git merge --no-ff development  # Merge de development a main
+          git push origin main  # Empuja los cambios a main
