@@ -37,5 +37,5 @@ jobs:
           git fetch --all  # Asegúrate de obtener todas las ramas remotas
           git checkout main  # Cambia a la rama main
           git pull origin main  # Asegúrate de que tienes los cambios más recientes de main
-          git merge --no-ff development  # Merge de development a main
+          git merge --no-ff --allow-unrelated-histories development  # Permite fusionar historias no relacionadas
           git push origin main  # Empuja los cambios a main
