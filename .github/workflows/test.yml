@@ -55,10 +55,12 @@ jobs:
         run: |
           git checkout main
           git merge origin/development --allow-unrelated-histories --no-ff --commit -m "Merge development into main"
-          # Verifica si hay conflictos de merge
+          
+          # Verificar si hay conflictos
           if git ls-files -u | grep -q .; then
-            echo "Merge conflict detected, please resolve the conflicts manually."
-            exit 1
+            echo "Merge conflict detected in the following files:"
+            git ls-files -u
+            exit 1  # Termina el flujo de trabajo si hay conflictos
           fi
           
       # Paso 5: Subir los cambios a la rama main
