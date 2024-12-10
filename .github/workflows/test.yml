@@ -68,4 +68,4 @@ jobs:
         run: |
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Usa el token de GitHub para autenticación
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Usa el token de GitHub para autenticación
