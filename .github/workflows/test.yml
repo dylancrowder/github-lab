@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Especifica la versión de Node.js que estés utilizando
+          node-version: '16'  # Especifica la versión de Node.js que estés utilizando
 
       # Paso 3: Instalar las dependencias
       - name: Install dependencies
@@ -42,19 +42,19 @@ jobs:
       # Paso 2: Configurar Git (nombre de usuario y correo)
       - name: Set up Git
         run: |
-          git config user.name "devdylancrowder"
-          git config user.email "devdylancrowder@outlook.com"
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
 
       # Paso 3: Obtener los últimos cambios de las ramas
       - name: Fetch latest branches
         run: |
           git fetch origin main
 
-      # Paso 4: Hacer el merge de development a main
+      # Paso 4: Hacer el merge de development a main, forzando el merge entre historiales no relacionados
       - name: Merge development into main
         run: |
           git checkout main
-          git merge origin/development --no-ff --commit -m "Merge development into main"
+          git merge origin/development --allow-unrelated-histories --no-ff --commit -m "Merge development into main"
           
       # Paso 5: Subir los cambios a la rama main
       - name: Push changes
