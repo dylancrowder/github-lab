@@ -1,82 +1,64 @@
-name: Auto Merge Development to Main
+name: Test and Merge Development to Main
 
 on:
   push:
     branches:
-      - development
+      - development   # Se activa cuando hay un push a la rama 'development'
 
 jobs:
-  test-and-merge:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Clonar el código
-      - name: Checkout Code
+      # Paso 1: Revisar el código del repositorio
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Configurar Node.js
+      # Paso 2: Configurar el entorno de Node.js (si usas Node.js, por ejemplo)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20'  # Especifica la versión de Node.js que estés utilizando
 
-      # 3. Instalar dependencias
-      - name: Install Dependencies
-        run: npm install
+      # Paso 3: Instalar las dependencias
+      - name: Install dependencies
+        run: |
+          npm install  # O el comando para instalar las dependencias, dependiendo de tu proyecto
 
-      # 4. Ejecutar los tests
-      - name: Run Tests
-        run: npm test
+      # Paso 4: Ejecutar los tests
+      - name: Run tests
+        run: |
+          npm test  # O el comando para correr los tests en tu proyecto
 
-      # 5. Registrar estado después de los tests
-      - name: Log Test Status
-        run: echo "Tests completed successfully."
+  merge:
+    runs-on: ubuntu-latest
+    needs: test  # Este trabajo depende del trabajo 'test', solo se ejecutará si 'test' es exitoso
 
-      # 6. Intentar fusión automática
-      - name: Merge Development to Main
-        if: success()
+    steps:
+      # Paso 1: Revisar el código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar Git (nombre de usuario y correo)
+      - name: Set up Git
+        run: |
+          git config user.name "devdylancrowder"
+          git config user.email "devdylancrowder@outlook.com"
+
+      # Paso 3: Obtener los últimos cambios de las ramas
+      - name: Fetch latest branches
+        run: |
+          git fetch origin main
+
+      # Paso 4: Hacer el merge de development a main
+      - name: Merge development into main
+        run: |
+          git checkout main
+          git merge origin/development --no-ff --commit -m "Merge development into main"
+          
+      # Paso 5: Subir los cambios a la rama main
+      - name: Push changes
+        run: |
+          git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Iniciando proceso de fusión..."
-
-          # Configuración de Git
-          git config user.name "dylan"
-          git config user.email ""
-
-          # Actualizar main y development
-          echo "Actualizando ramas locales..."
-          git fetch origin
-          git checkout main
-          git pull origin main
-
-          echo "Obteniendo cambios de development..."
-          git checkout development
-          git pull origin development
-
-          # Intentar la fusión
-          echo "Intentando fusionar development en main..."
-          git checkout main
-          git merge development || {
-            echo "Conflicto detectado durante la fusión. Requiere intervención manual."
-            exit 1
-          }
-
-          # Confirmar la fusión
-          echo "Fusión exitosa. Enviando cambios a main..."
-          git push origin main || {
-            echo "Error al hacer push en la rama main. Verifique permisos o reglas de protección."
-            exit 1
-          }
-
-      # 7. Registrar estado final
-      - name: Log Final Status
-        run: echo "Fusión completada exitosamente."
-
-      # 8. Registro de depuración adicional
-      - name: Debug Merge State
-        run: |
-          echo "Estado del repositorio después del proceso:"
-          git status
-          echo "Últimos commits:"
-          git log -n 5
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Usa el token de GitHub para autenticación
