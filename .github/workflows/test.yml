@@ -59,6 +59,8 @@ jobs:
           git checkout main
           git merge development --allow-unrelated-histories || {
             echo "Conflicto detectado durante la fusión. Requiere intervención manual."
+            echo "Archivos con conflicto:"
+            git diff --name-only --diff-filter=U
             exit 1
           }
 
