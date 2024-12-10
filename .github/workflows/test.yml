@@ -30,7 +30,7 @@ jobs:
 
       # 5. Merge a main si los tests pasan
       - name: Merge Development to Main
-        if: success()  # Solo si los tests pasan
+        if: success() 
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
