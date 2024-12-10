@@ -1,9 +1,9 @@
 name: Merge y Push
 
-on: 
+on:
   push:
     branches:
-      - 'development'  # Esta es la rama que activará la acción al hacer push
+      - 'development'
 
 jobs:
   merge:
@@ -16,7 +16,8 @@ jobs:
       - name: Realizar el merge de development en main
         uses: morbalint/git-merge-action@v1
         with:
-          target: 'main'  # Rama destino
-          source: 'development'  # Rama origen
-          strategy_options: 'ours'  # Estrategia de fusión (puedes personalizarla)
-          token: ${{ secrets.GITHUB_TOKEN }}  # Usa el token de GitHub para autenticación
+          target: 'main'
+          source: 'development'
+          strategy_options: 'ours'
+          token: ${{ secrets.GITHUB_TOKEN }}  # Esto usa el token predeterminado de GitHub Actions
+
