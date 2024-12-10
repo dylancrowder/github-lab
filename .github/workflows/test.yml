@@ -50,11 +50,11 @@ jobs:
         run: |
           git fetch origin main
 
-      # Paso 4: Hacer el merge de development a main, forzando el merge entre historiales no relacionados
+      # Paso 4: Hacer el merge de development a main, resolviendo conflictos automáticamente con "theirs" (favor de development)
       - name: Merge development into main
         run: |
           git checkout main
-          git merge origin/development --allow-unrelated-histories --no-ff --commit -m "Merge development into main"
+          git merge origin/development --allow-unrelated-histories --no-ff -X theirs -m "Merge development into main"
           
           # Verificar si hay conflictos
           if git ls-files -u | grep -q .; then
