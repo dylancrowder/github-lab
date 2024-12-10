@@ -1,23 +1,82 @@
-name: Merge y Push
+name: Auto Merge Development to Main
 
 on:
   push:
     branches:
-      - 'development'
+      - development
 
 jobs:
-  merge:
+  test-and-merge:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v2
+      # 1. Clonar el código
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Realizar el merge de development en main
-        uses: morbalint/git-merge-action@v1
+      # 2. Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          target: 'main'
-          source: 'development'
-          strategy_options: 'ours'
-          token: ${{ secrets.GITHUB_TOKEN }}  # Esto usa el token predeterminado de GitHub Actions
+          node-version: '20'
 
+      # 3. Instalar dependencias
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Ejecutar los tests
+      - name: Run Tests
+        run: npm test
+
+      # 5. Registrar estado después de los tests
+      - name: Log Test Status
+        run: echo "Tests completed successfully."
+
+      # 6. Intentar fusión automática
+      - name: Merge Development to Main
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Iniciando proceso de fusión..."
+
+          # Configuración de Git
+          git config user.name "dylan"
+          git config user.email ""
+
+          # Actualizar main y development
+          echo "Actualizando ramas locales..."
+          git fetch origin
+          git checkout main
+          git pull origin main
+
+          echo "Obteniendo cambios de development..."
+          git checkout development
+          git pull origin development
+
+          # Intentar la fusión
+          echo "Intentando fusionar development en main..."
+          git checkout main
+          git merge development || {
+            echo "Conflicto detectado durante la fusión. Requiere intervención manual."
+            exit 1
+          }
+
+          # Confirmar la fusión
+          echo "Fusión exitosa. Enviando cambios a main..."
+          git push origin main || {
+            echo "Error al hacer push en la rama main. Verifique permisos o reglas de protección."
+            exit 1
+          }
+
+      # 7. Registrar estado final
+      - name: Log Final Status
+        run: echo "Fusión completada exitosamente."
+
+      # 8. Registro de depuración adicional
+      - name: Debug Merge State
+        run: |
+          echo "Estado del repositorio después del proceso:"
+          git status
+          echo "Últimos commits:"
+          git log -n 5
