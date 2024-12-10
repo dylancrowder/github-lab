@@ -54,10 +54,10 @@ jobs:
           git checkout development
           git pull origin development
 
-          # Intentar la fusión
+          # Intentar la fusión con --allow-unrelated-histories
           echo "Intentando fusionar development en main..."
           git checkout main
-          git merge development || {
+          git merge development --allow-unrelated-histories || {
             echo "Conflicto detectado durante la fusión. Requiere intervención manual."
             exit 1
           }
